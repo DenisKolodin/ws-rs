@@ -8,6 +8,7 @@ use std::convert::{From, Into};
 
 use httparse;
 use mio;
+use openssl::ssl::error::SslError;
 
 use communication::Command;
 
@@ -22,6 +23,7 @@ pub enum Kind {
     Io(io::Error), // failure to perform io, instant shutdown
     Parse(httparse::Error), // failure to parse http request/response, will attempt to send 500
     Queue(mio::NotifyError<Command>), // unable to send message, instant shutdown
+    Ssl(SslError),
     Custom(Box<StdError>), // custom error to allow library clients to return errors from deep within the application, no default behavior
 }
 
@@ -82,6 +84,7 @@ impl StdError for Error {
             Kind::Parse(_)          => "Unable to parse HTTP",
             Kind::Queue(_)          => "Unable to send signal on event loop",
             Kind::Custom(ref err)   => err.description(),
+            Kind::Ssl(ref err)      => err.description(),
         }
     }
 
@@ -89,6 +92,7 @@ impl StdError for Error {
         match self.kind {
             Kind::Encoding(ref err) => Some(err),
             Kind::Io(ref err)       => Some(err),
+            Kind::Ssl(ref err)      => Some(err),
             _ => None,
         }
     }
@@ -123,6 +127,16 @@ impl From<mio::NotifyError<Command>> for Error {
 impl From<Utf8Error> for Error {
     fn from(err: Utf8Error) -> Error {
         Error::new(Kind::Encoding(err), "")
+    }
+}
+
+impl From<SslError> for Error {
+    fn from(err: SslError) -> Error {
+        match err {
+            SslError::StreamError(err) => Error::from(err),
+            SslError::SslSessionClosed => Error::new(Kind::Ssl(err), "Ssl session closed."),
+            _ => Error::new(Kind::Ssl(err), ""),
+        }
     }
 }
 

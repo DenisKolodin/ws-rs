@@ -1,7 +1,10 @@
 use std::default::Default;
 
+use openssl::ssl::{SslContext, SslMethod};
+
 use super::handler::Handler;
 use communication::Sender;
+use result::{Result, Error};
 
 pub trait Factory {
     type Handler: Handler;
@@ -17,6 +20,11 @@ pub trait Factory {
     #[inline]
     fn on_shutdown(&mut self) {
         debug!("Factory received WebSocket shutdown request.");
+    }
+
+    #[inline]
+    fn ssl_context(&mut self) -> Result<SslContext> {
+        SslContext::new(SslMethod::Tlsv1).map_err(Error::from)
     }
 
 }
@@ -38,6 +46,7 @@ pub struct Settings {
     pub panic_on_shutdown: bool,
     pub protocols: Option<&'static str>,
     pub extensions: Option<&'static str>,
+    pub listen_secure: bool,
 }
 
 impl Default for Settings {
@@ -45,10 +54,11 @@ impl Default for Settings {
     fn default() -> Settings {
         Settings {
             max_connections: 10_000,
-            panic_on_new_connection: false,
+            panic_on_new_connection: true,
             panic_on_shutdown: false,
             protocols: None,
             extensions: None,
+            listen_secure: false,
         }
     }
 }

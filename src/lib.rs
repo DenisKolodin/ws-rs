@@ -4,6 +4,7 @@ extern crate mio;
 extern crate sha1;
 extern crate rand;
 extern crate url;
+extern crate openssl;
 #[macro_use] extern crate log;
 
 mod result;
@@ -17,7 +18,6 @@ mod io;
 
 pub use connection::factory::Factory;
 pub use connection::handler::Handler;
-
 #[doc(no_inline)]
 pub use result::{Result, Error};
 pub use result::Kind as ErrorKind;

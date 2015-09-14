@@ -1,4 +1,7 @@
+mod stream;
+
 use std::net::{SocketAddr, ToSocketAddrs};
+use std::io;
 
 use mio;
 use mio::{
@@ -10,6 +13,7 @@ use mio::{
 use mio::tcp::{TcpListener, TcpStream, TcpSocket};
 use mio::util::Slab;
 use url::Url;
+use openssl::ssl::SslStream;
 
 use communication::{Sender, Signal, Command};
 use result::{Result, Error, Kind};
@@ -19,11 +23,13 @@ use connection::state::Endpoint;
 use handshake::{Handshake, Request};
 use protocol::CloseCode;
 
+use self::stream::Stream;
+
 pub const ALL: Token = Token(0);
 const CONN_START: Token = Token(1);
 
 pub type Loop<F> = EventLoop<Handler<F>>;
-type Conn<F> = Connection<TcpStream, <F as Factory>::Handler>;
+type Conn<F> = Connection<Stream, <F as Factory>::Handler>;
 type Chan = mio::Sender<Command>;
 
 fn connect_to_url(url: &Url) -> Result<TcpStream> {
@@ -76,20 +82,19 @@ impl<F> Handler<F>
         }
     }
 
-    pub fn listen(&mut self, eloop: &mut Loop<F>, addr: &SocketAddr) -> Result<&mut Handler<F>> {
+    pub fn listen(&mut self, eloop: &mut Loop<F>, addr: &SocketAddr) -> Result<()> {
 
         debug_assert!(
             self.listener.is_none(),
             "Attempted to listen for connections from two addresses on the same websocket.");
 
-        // let tcp = try!(TcpListener::bind(addr));
-        let socket = try!(TcpSocket::v4());
-        try!(socket.set_reuseaddr(true));
-        try!(socket.bind(addr));
-        let tcp = try!(socket.listen(1024));
+        let tcp = try!(TcpListener::bind(addr));
+        // let socket = try!(TcpSocket::v4());
+        // try!(socket.set_reuseaddr(true));
+        // try!(socket.bind(addr));
+        // let tcp = try!(socket.listen(1024));
         try!(eloop.register(&tcp, ALL));
-        self.listener = Some(tcp);
-        Ok(self)
+        Ok(self.listener = Some(tcp))
     }
 
     pub fn connect(&mut self, eloop: &mut Loop<F>, url: &Url) -> Result<&mut Handler<F>> {
@@ -98,21 +103,25 @@ impl<F> Handler<F>
                 return Err(Error::new(Kind::Internal, format!("Not a valid websocket url: {:?}", url)))
             }
 
-            let sock = try!(connect_to_url(url));
             let factory = &mut self.factory;
             let settings = factory.settings();
             let req = try!(Request::from_url(url, settings.protocols, settings.extensions));
+
+            // let sock = Stream::Tcp(try!(connect_to_url(url)));
+            let sock = Stream::TlsConnecting(try!(connect_to_url(url)));
 
             let tok = try!(self.connections.insert_with(|tok| {
                 let handler = factory.connection_made(Sender::new(tok, eloop.channel()));
                 Connection::builder(tok, sock, handler).client().request(req).build()
             }).ok_or(Error::new(Kind::Capacity, "Unable to add another connection to the event loop.")));
 
+            // TODO: use connection events when not using ssl
             let conn = &mut self.connections[tok];
             try!(eloop.register_opt(
-                conn.socket(),
+                conn.socket().evented(),
                 conn.token(),
-                conn.events(),
+                // conn.events(),
+                EventSet::readable() | EventSet::writable() | EventSet::hup(),
                 PollOpt::edge() | PollOpt::oneshot(),
             ));
         }
@@ -120,6 +129,9 @@ impl<F> Handler<F>
     }
 
     pub fn accept(&mut self, eloop: &mut Loop<F>, sock: TcpStream) -> Result<()> {
+        // for now
+        let sock = Stream::Tcp(sock);
+
         let factory = &mut self.factory;
         let settings = factory.settings();
         let tok = try!(self.connections.insert_with(|tok| {
@@ -130,7 +142,7 @@ impl<F> Handler<F>
         let conn = &mut self.connections[tok];
 
         eloop.register_opt(
-            conn.socket(),
+            conn.socket().evented(),
             conn.token(),
             conn.events(),
             PollOpt::edge() | PollOpt::oneshot(),
@@ -148,7 +160,7 @@ impl<F> Handler<F>
     fn schedule(&self, eloop: &mut Loop<F>, conn: &Conn<F>) -> Result<()> {
         trace!("Scheduling connection {:?} as {:?}", conn.token(), conn.events());
         Ok(try!(eloop.reregister(
-            conn.socket(),
+            conn.socket().evented(),
             conn.token(),
             conn.events(),
             PollOpt::edge() | PollOpt::oneshot()
@@ -196,7 +208,7 @@ impl<F> mio::Handler for Handler <F>
             _ => {
                 if events.is_error() {
                     trace!("Encountered error on tcp stream.");
-                    if let Err(err) = self.connections[token].socket().take_socket_error() {
+                    if let Err(err) = self.connections[token].socket().evented().take_socket_error() {
                         trace!("Error was {}", err);
                         self.connections[token].error(Error::from(err));
                     }
@@ -206,6 +218,43 @@ impl<F> mio::Handler for Handler <F>
                     debug!("Tcp connection hung up on {:?}.", token);
                     self.connections.remove(token);
                 } else {
+                    // check to see if we need to upgrade to TLS
+                    let is_client = self.connections[token].is_client();
+                    debug!("Checking TLS");
+                    match self.connections[token].socket_mut().upgrade(&mut self.factory, is_client) {
+                        Ok(None) => {
+                            debug!("Blocked while trying to upgrade TLS connection on {:?}.", token);
+                            if let Err(err) = eloop.reregister(
+                                self.connections[token].socket().evented(),
+                                token,
+                                EventSet::readable() | EventSet::writable() | EventSet::hup(),
+                                PollOpt::edge() | PollOpt::oneshot(),
+                            ).map_err(Error::from) {
+                                debug!(
+                                    "Encountered error while trying to schedule connection for TLS upgrade {:?}: {:?}",
+                                    token,
+                                    err);
+                                self.connections[token].error(err);
+                                trace!("Disconnecting due to TLS failure on {:?}.", token);
+                                self.connections.remove(token);
+                            }
+                            return
+                        }
+                        Err(err) => {
+                            debug!(
+                                "Encountered error while trying to upgrade TLS on {:?}: {:?}",
+                                token,
+                                err);
+                            self.connections[token].error(err);
+                            trace!("Disconnecting due to TLS failure on {:?}.", token);
+                            self.connections.remove(token);
+                            return
+                        }
+                        _ => {
+                            trace!("Successfully upgraded to TLS on {:?}", token);
+                        }
+                    }
+
 
                     let active = {
                         let conn = &mut self.connections[token];

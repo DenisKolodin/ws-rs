@@ -106,6 +106,10 @@ impl<S, H> Connection<S, H>
         &self.socket
     }
 
+    pub fn socket_mut(&mut self) -> &mut S {
+        &mut self.socket
+    }
+
     pub fn state(&self) -> &State {
         &self.state
     }
@@ -232,6 +236,12 @@ impl<S, H> Connection<S, H>
                     }
                     Kind::Custom(_) => {
                         self.handler.on_error(err);
+                    }
+                    Kind::Ssl(_) => {
+                        error!("Encountered encryption error.");
+                        self.handler.on_error(err);
+                        error!("Disconnecting WebSocket.");
+                        self.events = EventSet::none();
                     }
                     _ => {
                         if settings.panic_on_io {

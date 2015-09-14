@@ -13,16 +13,18 @@ fn main () {
     env_logger::init().unwrap();
 
     // Parse str into a url
-    let url = url::Url::parse("ws://127.0.0.1:3012").unwrap();
+    // let url = url::Url::parse("ws://127.0.0.1:3012").unwrap();
+    let url = url::Url::parse("ws://wss.websocketstest.com:443/service").unwrap();
 
     // Connect to the url and call the closure
     if let Err(error) = connect(url, |out| {
 
         // Queue a message to be sent when the websocket is open
-        if let Err(_) = out.send("Hello WebSocket") {
+        // if let Err(_) = out.send("Hello WebSocket") {
+        if let Err(_) = out.send("timer,") {
             println!("Websocket couldn't queue an initial message.")
         } else {
-            println!("Client sent message 'Hello WebSocket'. ")
+            // println!("Client sent message 'Hello WebSocket'. ")
         }
 
         // The handler needs to take ownership of out, so we use move
@@ -37,7 +39,7 @@ fn main () {
 
     }) {
         // Inform the user of any error
-        println!("WebSocket failed with {:?}", error);
+        println!("WebSocket failed with {:?}", error)
     }
 
 }
