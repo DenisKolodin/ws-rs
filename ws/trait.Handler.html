@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Handler` trait in crate `ws`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Handler">
+
+    <title>ws::Handler - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>ws</a></p><script>window.sidebarCurrent = {name: 'Handler', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>ws</a>::<wbr><a class='trait' href=''>Handler</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-928' class='srclink' href='../src/ws/connection/handler.rs.html#14-147' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Handler {
+    fn <a href='#method.settings' class='fnname'>settings</a>(&amp;mut self) -&gt; <a class='struct' href='../ws/struct.ConnectionSettings.html' title='ws::ConnectionSettings'>Settings</a> { ... }
+    fn <a href='#method.on_shutdown' class='fnname'>on_shutdown</a>(&amp;mut self) { ... }
+    fn <a href='#method.on_open' class='fnname'>on_open</a>(&amp;mut self, shake: <a class='struct' href='../ws/struct.Handshake.html' title='ws::Handshake'>Handshake</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt; { ... }
+    fn <a href='#method.on_message' class='fnname'>on_message</a>(&amp;mut self, msg: <a class='enum' href='../ws/enum.Message.html' title='ws::Message'>Message</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt; { ... }
+    fn <a href='#method.on_close' class='fnname'>on_close</a>(&amp;mut self, code: <a class='enum' href='../ws/enum.CloseCode.html' title='ws::CloseCode'>CloseCode</a>, reason: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) { ... }
+    fn <a href='#method.on_error' class='fnname'>on_error</a>(&amp;mut self, err: <a class='struct' href='../ws/struct.Error.html' title='ws::Error'>Error</a>) { ... }
+    fn <a href='#method.on_request' class='fnname'>on_request</a>(&amp;mut self, req: &amp;<a class='struct' href='../ws/struct.Request.html' title='ws::Request'>Request</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;, <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;)</a>&gt; { ... }
+    fn <a href='#method.on_response' class='fnname'>on_response</a>(&amp;mut self, res: &amp;<a class='struct' href='../ws/struct.Response.html' title='ws::Response'>Response</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt; { ... }
+    fn <a href='#method.on_ping_frame' class='fnname'>on_ping_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt; { ... }
+    fn <a href='#method.on_pong_frame' class='fnname'>on_pong_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt; { ... }
+    fn <a href='#method.on_close_frame' class='fnname'>on_close_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt; { ... }
+    fn <a href='#method.on_binary_frame' class='fnname'>on_binary_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt; { ... }
+    fn <a href='#method.on_text_frame' class='fnname'>on_text_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt; { ... }
+    fn <a href='#method.on_fragmented_frame' class='fnname'>on_fragmented_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt; { ... }
+}</pre><div class='docblock'><p>The core trait of this library.
+Implementing this trait provides the business logic of the WebSocket application.</p>
+</div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.settings' class='method stab '><code>fn <a href='#method.settings' class='fnname'>settings</a>(&amp;mut self) -&gt; <a class='struct' href='../ws/struct.ConnectionSettings.html' title='ws::ConnectionSettings'>Settings</a></code></h3><h3 id='method.on_shutdown' class='method stab '><code>fn <a href='#method.on_shutdown' class='fnname'>on_shutdown</a>(&amp;mut self)</code></h3><div class='docblock'><p>Called when a request to shutdown all connections has been received.</p>
+</div><h3 id='method.on_open' class='method stab '><code>fn <a href='#method.on_open' class='fnname'>on_open</a>(&amp;mut self, shake: <a class='struct' href='../ws/struct.Handshake.html' title='ws::Handshake'>Handshake</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Called when the WebSocket handshake is successful and the connection is open for sending
+and receiving messages.</p>
+</div><h3 id='method.on_message' class='method stab '><code>fn <a href='#method.on_message' class='fnname'>on_message</a>(&amp;mut self, msg: <a class='enum' href='../ws/enum.Message.html' title='ws::Message'>Message</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>Called on incoming messages.</p>
+</div><h3 id='method.on_close' class='method stab '><code>fn <a href='#method.on_close' class='fnname'>on_close</a>(&amp;mut self, code: <a class='enum' href='../ws/enum.CloseCode.html' title='ws::CloseCode'>CloseCode</a>, reason: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>)</code></h3><div class='docblock'><p>Called when the other endpoint is asking to close the connection.</p>
+</div><h3 id='method.on_error' class='method stab '><code>fn <a href='#method.on_error' class='fnname'>on_error</a>(&amp;mut self, err: <a class='struct' href='../ws/struct.Error.html' title='ws::Error'>Error</a>)</code></h3><div class='docblock'><p>Called when an error occurs on the WebSocket.</p>
+</div><h3 id='method.on_request' class='method stab '><code>fn <a href='#method.on_request' class='fnname'>on_request</a>(&amp;mut self, req: &amp;<a class='struct' href='../ws/struct.Request.html' title='ws::Request'>Request</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;, <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>&gt;)</a>&gt;</code></h3><div class='docblock'><p>A method for handling the low-level workings of the request portion of the WebSocket
+handshake. Implementors can inspect the Request and select an appropriate string protocol
+and/or extensions to be used. This method will not be called when the handler represents
+a client endpoint.</p>
+</div><h3 id='method.on_response' class='method stab '><code>fn <a href='#method.on_response' class='fnname'>on_response</a>(&amp;mut self, res: &amp;<a class='struct' href='../ws/struct.Response.html' title='ws::Response'>Response</a>) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></h3><div class='docblock'><p>A method for handling the low-level workings of the response portion of the WebSocket
+handshake. Implementors can inspect the Response and choose to faile the connection by
+returning an error. This method will not be called when the handler represents a server
+endpoint.</p>
+</div><h3 id='method.on_ping_frame' class='method stab '><code>fn <a href='#method.on_ping_frame' class='fnname'>on_ping_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt;</code></h3><h3 id='method.on_pong_frame' class='method stab '><code>fn <a href='#method.on_pong_frame' class='fnname'>on_pong_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt;</code></h3><h3 id='method.on_close_frame' class='method stab '><code>fn <a href='#method.on_close_frame' class='fnname'>on_close_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt;</code></h3><h3 id='method.on_binary_frame' class='method stab '><code>fn <a href='#method.on_binary_frame' class='fnname'>on_binary_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt;</code></h3><h3 id='method.on_text_frame' class='method stab '><code>fn <a href='#method.on_text_frame' class='fnname'>on_text_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt;</code></h3><h3 id='method.on_fragmented_frame' class='method stab '><code>fn <a href='#method.on_fragmented_frame' class='fnname'>on_fragmented_frame</a>(&amp;mut self, frame: Frame) -&gt; <a class='type' href='../ws/type.Result.html' title='ws::Result'>Result</a>&lt;<a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;Frame&gt;&gt;</code></h3></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    </ul><script type="text/javascript" async
+                              src="../implementors/ws/trait.Handler.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "ws";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>

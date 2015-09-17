@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Settings","Settings that apply to a single connection."]],"trait":[["Handler","The core trait of this library. Implementing this trait provides the business logic of the WebSocket application."]]});

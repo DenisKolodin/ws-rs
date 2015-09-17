@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ConnectionSettings` struct in crate `ws`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ConnectionSettings">
+
+    <title>ws::ConnectionSettings - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>ws</a></p><script>window.sidebarCurrent = {name: 'ConnectionSettings', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>ws</a>::<wbr><a class='struct' href=''>ConnectionSettings</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-2423' class='srclink' href='../src/ws/connection/handler.rs.html#158-214' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ConnectionSettings {
+    pub fragments_capacity: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,
+    pub fragments_grow: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub fragment_size: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,
+    pub in_buffer_capacity: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,
+    pub in_buffer_grow: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub out_buffer_capacity: <a href='http://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a>,
+    pub out_buffer_grow: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub panic_on_internal: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub panic_on_capacity: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub panic_on_protocol: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub panic_on_encoding: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub panic_on_io: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub masking_strict: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+    pub key_strict: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>,
+}</pre><div class='docblock'><p>Settings that apply to a single connection.</p>
+</div><h2 class='fields'>Fields</h2>
+<table><tr class='stab '>
+                                  <td id='structfield.fragments_capacity'><code>fragments_capacity</code></td><td><div class='docblock'><p>The maximum number of fragments the connection can handle without reallocating.
+Default: 10</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.fragments_grow'><code>fragments_grow</code></td><td><div class='docblock'><p>Whether to reallocate when <code>fragments_capacity</code> is reached. If this is false,
+a Capacity error will be triggered instead.
+Default: true</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.fragment_size'><code>fragment_size</code></td><td><div class='docblock'><p>The maximum length of outgoing frames. Messages longer than this will be fragmented.
+Default: 65,535</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.in_buffer_capacity'><code>in_buffer_capacity</code></td><td><div class='docblock'><p>The size of the incoming buffer. A larger buffer uses more memory but will allow for fewer
+reallocations.
+Default: 2048</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.in_buffer_grow'><code>in_buffer_grow</code></td><td><div class='docblock'><p>Whether to reallocate the incoming buffer when <code>in_buffer_capacity</code> is reached. If this is
+false, a Capacity error will be triggered instead.
+Default: true</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.out_buffer_capacity'><code>out_buffer_capacity</code></td><td><div class='docblock'><p>The size of the outgoing buffer. A larger buffer uses more memory but will allow for fewer
+reallocations.
+Default: 2048</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.out_buffer_grow'><code>out_buffer_grow</code></td><td><div class='docblock'><p>Whether to reallocate the incoming buffer when <code>out_buffer_capacity</code> is reached. If this is
+false, a Capacity error will be triggered instead.
+Default: true</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.panic_on_internal'><code>panic_on_internal</code></td><td><div class='docblock'><p>Whether to panic when an Internal error is encountered. Internal errors should generally
+not occur, so this setting defaults to true as a debug measure, whereas production
+applications should consider setting it to false.
+Default: true</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.panic_on_capacity'><code>panic_on_capacity</code></td><td><div class='docblock'><p>Whether to panic when a Capacity error is encountered.
+Default: false</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.panic_on_protocol'><code>panic_on_protocol</code></td><td><div class='docblock'><p>Whether to panic when a Protocol error is encountered.
+Default: false</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.panic_on_encoding'><code>panic_on_encoding</code></td><td><div class='docblock'><p>Whether to panic when an Encoding error is encountered.
+Default: false</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.panic_on_io'><code>panic_on_io</code></td><td><div class='docblock'><p>Whether to panic when an Io error is encountered.
+Default: false</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.masking_strict'><code>masking_strict</code></td><td><div class='docblock'><p>The WebSocket protocol requires frames sent from client endpoints to be masked as a
+security and sanity precaution. Enforcing this requirement, which may be removed at some
+point may cause incompatibilities. If you need the extra security, set this to true.
+Default: false</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.key_strict'><code>key_strict</code></td><td><div class='docblock'><p>The WebSocket protocol requires clients to verify the key returned by a server to ensure
+that the server and all intermediaries can perform the protocol. Verifying the key will
+consume processing time and other resources with the benifit that we can fail the
+connection early. The default in WS-RS is to accept any key from the server and instead
+fail late if a protocol error occurs. Change this setting to enable key verification.
+Default: false</p>
+</div></td></tr></table><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a> for <a class='struct' href='../ws/struct.ConnectionSettings.html' title='ws::ConnectionSettings'>Settings</a></code></h3><div class='impl-items'><h4 id='method.default' class='method'><code>fn <a href='http://doc.rust-lang.org/nightly/core/default/trait.Default.html#method.default' class='fnname'>default</a>() -&gt; <a class='struct' href='../ws/struct.ConnectionSettings.html' title='ws::ConnectionSettings'>Settings</a></code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div>
+            <div class="shortcuts">
+                <h1>Keyboard Shortcuts</h1>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h1>Search Tricks</h1>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>typedef</code> (or
+                    <code>tdef</code>).
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "ws";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>
